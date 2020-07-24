@@ -1,4 +1,6 @@
 const calculateTypeBoxWidth = require('./calculate-type-box-width.js');
+const {createPropertyText} = require('./create-property-text.js');
+const {createMethodText} = require('./create-method-text.js');
 
 function buildTypeBox(stb, svgEl) {
   let tb = {};
@@ -42,7 +44,7 @@ function buildTypeBox(stb, svgEl) {
 
     for (let i = 0; i < stb.properties.length; i++) {
       tb.properties[i] = {
-        text: stb.properties[i],
+        text: createPropertyText(stb.properties[i]),
         y: currentY + (stb.propertyLineHeight / 2),
       };
 
@@ -58,7 +60,7 @@ function buildTypeBox(stb, svgEl) {
 
     for (let i = 0; i < stb.methods.length; i++) {
       tb.methods[i] = {
-        text: stb.methods[i],
+        text: createMethodText(stb.methods[i]),
         y: currentY + (stb.methodLineHeight / 2),
       };
 

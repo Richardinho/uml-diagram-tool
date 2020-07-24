@@ -40,8 +40,16 @@ const diagram = {
 
       title: 'Abstract Factory',
       properties: [
-        '+fddddd sdsds sdsd sds sdsdsdsddsdsoo:string',
-        '+bar:number',
+        {
+          visibility: 'private',
+          name: 'foo',
+          type: 'string'
+        },
+        {
+          visibility: 'protected',
+          name: 'bar',
+          type: 'number'
+        },
       ],
       methods: [
       ],
@@ -72,12 +80,26 @@ const diagram = {
 
       title: 'Command Pattern really long blah lalal alall hello lwllwwlwl ',
       properties: [
-        '+foo:string',
-        '+bar:number',
+        {
+          visibility: 'public',
+          name: 'hello',
+          type: 'Object',
+        }
       ],
       methods: [
-        '+blah():string',
-        '+miz():number',
+
+        {
+          visibility: 'public',
+          name: 'najdorf',
+          returnType: 'Object',
+          args: [
+            {
+              name: 'alpha',
+              type: 'string',
+            },
+            { name: 'beta', type: 'number',}
+          ],
+        }
       ],
     }
   ],

@@ -32,11 +32,13 @@ module.exports = function(id, configData) {
       id,
       title: configData.name,
       properties: [
-        '+fddddd sdsds sdsd sds sdsdsdsddsdsoo:string',
-        '+bar:number',
+        {
+          visibility: 'private',
+          name: 'dinner',
+          type: 'tomato',
+        }
       ],
       methods: [
-        '+doTheStrand():number'
       ],
     }, svgEl)
   }
