@@ -68,19 +68,11 @@ module.exports = function createTypeBoxComponent(svgEl, id) {
     });
 
     if (!state) {
-
       el = createTypeBox(svgEl, newState, id);
-
-
     } else if(state !== newState) {
-
       el.setAttribute('transform', `translate(${newState.x}, ${newState.y})`);
-
-
     } else if(!newState) {
-
       el.remove();
-
       isDeleted = true;
     }
 
