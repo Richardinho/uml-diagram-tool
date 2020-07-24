@@ -1,9 +1,10 @@
 const makeDraggable = require('../new-utility/make-draggable.js');
+const {attachContextMenu} = require('../new-utility/attach-context-menu.js');
 const createText = require('../new-utility/svg-utils/create-text.js');
 const xmlns = require('../new-utility/svg-utils/xmlns.js');
 const createSeparatorLine = require('../new-utility/svg-utils/create-separator-line.js');
 
-function createTypeBox(svgEl, state, id) {
+function createTypeBox(svgEl, state, id, store) {
 
   const paddingLeft = state.paddingLeft;
 
@@ -50,17 +51,18 @@ function createTypeBox(svgEl, state, id) {
   }
 
   makeDraggable(el, 'typeBox', id);
+  attachContextMenu(el, store, id);
 
   el.setAttribute('transform', `translate(${state.x}, ${state.y})`);
 
   return el;
 }
 
-module.exports = function createTypeBoxComponent(svgEl, id) {
+module.exports = function createTypeBoxComponent(svgEl, id, store) {
   let state;
   let el;
 
-  return function(store) {
+  return function() {
     let isDeleted = false;
 
     const newState = store.getState().typeBoxes.find((typeBox) => {
@@ -68,12 +70,12 @@ module.exports = function createTypeBoxComponent(svgEl, id) {
     });
 
     if (!state) {
-      el = createTypeBox(svgEl, newState, id);
-    } else if(state !== newState) {
-      el.setAttribute('transform', `translate(${newState.x}, ${newState.y})`);
+      el = createTypeBox(svgEl, newState, id, store);
     } else if(!newState) {
       el.remove();
       isDeleted = true;
+    } else if(state !== newState) {
+      el.setAttribute('transform', `translate(${newState.x}, ${newState.y})`);
     }
 
     state = newState;

@@ -1,7 +1,8 @@
 const createTypeBoxComponent = require('../renderers/type-box.js');
 const createConnectorComponent = require('../renderers/connector.js');
 
-module.exports = function initialiseDiagram(svgEl, diagram) {
+module.exports = function initialiseDiagram(svgEl, store) {
+  const diagram = store.getState();
   const components = [];
 
   /*
@@ -9,7 +10,7 @@ module.exports = function initialiseDiagram(svgEl, diagram) {
    */
 
   diagram.typeBoxes.forEach((typeBox) => {
-    components.push(createTypeBoxComponent(svgEl, typeBox.id));
+    components.push(createTypeBoxComponent(svgEl, typeBox.id, store));
   });
 
   /*

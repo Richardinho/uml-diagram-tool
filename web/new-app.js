@@ -30,15 +30,20 @@ function render(components, store) {
 
   const markedForDeletion = [];
 
+  const newComponents = [];
+
   for(let i = 0; i < components.length; i++ ) {
     const markForDeletion = components[i](store);
 
-    if (markForDeletion) {
-      markedForDeletion.push(i);
+    if (!markForDeletion) {
+      newComponents.push(components[i]);
     }
   }
 
+  components = newComponents;
+
   // remove marked components from components array here
+  return components;
 
 }
 
@@ -56,7 +61,7 @@ ipcRenderer.on('create:typeBox', () => {
     const newId = uniqid();
 
     //  create a typebox and push it into components array
-    components.push(createTypeBoxComponent(svgEl, newId));
+    components.push(createTypeBoxComponent(svgEl, newId, store));
 
     store.dispatch(createTypeBoxAction(newId, typeBox));
 
@@ -88,7 +93,7 @@ function createDiagram() {
     diagram,
   });
 
-  components = initialiseDiagram(svgEl, store.getState());
+  components = initialiseDiagram(svgEl, store);
 
   svgEl.addEventListener('drag', (event) => {
     if (event.detail.type === 'typeBox') {
@@ -100,9 +105,9 @@ function createDiagram() {
 
 
   store.subscribe(() => {
-    render(components, store);
+    components = render(components, store);
   });
 
-  render(components, store);
+  components = render(components, store);
 }
 

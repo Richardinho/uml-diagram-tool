@@ -1,4 +1,4 @@
-const getTypeBox = require('../store/type-box.js');
+const {getTypeBox} = require('../store/type-box.js');
 
 module.exports = function moveNodeAction(event, store) {
 

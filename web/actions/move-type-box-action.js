@@ -1,4 +1,4 @@
-const getConnector = require('../store/connector.js');
+const {getConnector} = require('../store/connector.js');
 module.exports = (event, store) => {
   const id = event.detail.id;
 
