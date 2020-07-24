@@ -1,0 +1,6 @@
+
+module.exports = (store, id) => {
+  return store.getState().typeBoxes.find((typeBox) => {
+    return typeBox.id === id;
+  });
+}

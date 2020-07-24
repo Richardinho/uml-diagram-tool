@@ -1,35 +1,81 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {session, dialog, app, Menu, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
+const fs = require('fs');
+const os = require('os')
+const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
-function createWindow () {
-  // Create the browser window.
+function createWindow (title = '') {
+
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 1000,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      nodeIntegration: true,
     }
   })
 
-  // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
+  mainWindow.loadFile('./web/new-app.html')
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
+  mainWindow.setTitle(title);
+
+
+  return mainWindow;
 }
+
+function createAddTypeBoxWindow() {
+  BrowserWindow.getFocusedWindow().webContents.send('create:typeBox');
+}
+
+const mainMenuTemplate = [
+  { label: '' },
+  {
+    label: "File",
+    submenu: [
+      {
+        label: 'Open',
+        click() {
+          const browserWindow = createWindow('richy rich');
+
+          // should validate contents to check that it is
+          // json and that it matches diagram schema
+
+          browserWindow.webContents.on('did-finish-load', () => {
+            const contents = JSON.stringify({
+              name: 'Command Pattern',
+            });
+
+            browserWindow.webContents.send('create:diagram', contents)
+          })
+        }
+      }
+    ]
+  },
+  {
+    label: 'Diagram',
+    submenu: [
+      {
+        label: 'Add Type Box',
+        click(menuItem, browserItem, event) {
+          createAddTypeBoxWindow();
+        },
+      }
+    ]
+  }
+];
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow()
-  
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
+
+  const menu = Menu.buildFromTemplate(mainMenuTemplate);
+  Menu.setApplicationMenu(menu);
+
+  createWindow();
+
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

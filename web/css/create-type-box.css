@@ -1,0 +1,49 @@
+.dialog {
+  background: lightgrey;
+  font-size: 12px;
+  font-family: helvetica;
+  box-shadow: 1px 1px 2px -1px black;
+  border: solid 1px grey;
+  border-radius: 5px;
+}
+
+.name {
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.property {
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+}
+
+.method {
+  display: flex;
+  padding: 5px;
+}
+
+.arg {
+  display: flex;
+  padding: 5px;
+}
+
+h2 {
+  margin: 0 5px;
+}
+
+label {
+  margin: 0 5px;
+}
+
+select {
+  margin: 0 5px;
+}
+
+button {
+  margin: 0 5px;
+}
