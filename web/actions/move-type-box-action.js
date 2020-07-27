@@ -1,3 +1,4 @@
+const {MOVE_TYPE_BOX} = require('../action.constants.js');
 const {getConnector} = require('../store/connector.js');
 module.exports = (event, store) => {
   const id = event.detail.id;
@@ -40,7 +41,7 @@ module.exports = (event, store) => {
   }
 
   return {
-    type: 'MOVE_TYPE_BOX',
+    type: MOVE_TYPE_BOX,
     id,
     newX,
     newY,

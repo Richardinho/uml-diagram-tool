@@ -1,3 +1,4 @@
+const {MOVE_NODE} = require('../action.constants.js');
 const {getTypeBox} = require('../store/type-box.js');
 
 module.exports = function moveNodeAction(event, store) {
@@ -99,7 +100,7 @@ module.exports = function moveNodeAction(event, store) {
 
 
   return {
-    type: 'MOVE_NODE',
+    type: MOVE_NODE,
     connectorId,
     nodeType,
     newX,

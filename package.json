@@ -4,7 +4,8 @@
   "description": "tool for creating and editing UML diagrams",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "test": "jest"
   },
   "repository": "",
   "keywords": [
@@ -18,7 +19,8 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^9.1.0",
-    "electron-devtools-installer": "^3.1.1"
+    "electron-devtools-installer": "^3.1.1",
+    "jest": "^26.1.0"
   },
   "dependencies": {
     "lodash": "^4.17.19",

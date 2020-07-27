@@ -13,7 +13,7 @@ module.exports = function createMethod(methodsEl, method, index) {
   const updateVisibility = createVisibilityButton(mce, 'method-visibility', index, 'public')
 
   const updateMethodName = createInput(mce, 'Name', method.name, {index, type: 'method-name'});
-  const updateMethodReturnType = createInput(mce, 'Return Type', method.returnValue, { index, type: 'method-return-type' });
+  const updateMethodReturnType = createInput(mce, 'Return Type', method.returnType, { index, type: 'method-return-type' });
 
   mce.append(createButton('add arg', 'add-arg', { index }));
   mce.append(createButton('delete', 'delete-method', { index }));

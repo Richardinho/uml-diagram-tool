@@ -112,8 +112,8 @@ module.exports = function createTypeBoxFormComponent(appEl, initialState) {
                 updateMethodName(i, newMethod.name);
               }
 
-              if (oldMethod.returnValue !== newMethod.returnValue) {
-                updateMethodReturnType(i, newMethod.returnValue);
+              if (oldMethod.returnType !== newMethod.returnType) {
+                updateMethodReturnType(i, newMethod.returnType);
               }
 
               if (newMethod.args !== oldMethod.args) {

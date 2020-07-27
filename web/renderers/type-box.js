@@ -1,85 +1,57 @@
 const makeDraggable = require('../new-utility/make-draggable.js');
 const {attachContextMenu} = require('../new-utility/attach-context-menu.js');
-const createText = require('../new-utility/svg-utils/create-text.js');
 const xmlns = require('../new-utility/svg-utils/xmlns.js');
-const createSeparatorLine = require('../new-utility/svg-utils/create-separator-line.js');
+const {createPropertyText} = require('../new-utility/create-property-text.js');
+const {createMethodText} = require('../new-utility/create-method-text.js');
+const {createName} = require('./create-name.js');
+const {createRectangle} = require('./create-rectangle.js');
+const {createProperties} = require('./create-properties.js');
+const {createMethods} = require('./create-methods.js');
+const {createSeparators} = require('./create-separators.js');
 
-function createTypeBox(svgEl, state, id, store) {
-
-  const paddingLeft = state.paddingLeft;
-
-  let el = document.createElementNS(xmlns, 'g');
-
-  svgEl.append(el);
-
-  let rectEl = document.createElementNS(xmlns, 'rect');
-
-  rectEl.setAttribute('x', 0);
-  rectEl.setAttribute('y', 0);
-  rectEl.setAttribute('width', state.width);
-  rectEl.setAttribute('height', state.height);
-  rectEl.setAttribute('fill', state.backgroundColor);
-  rectEl.setAttribute('stroke', state.borderColor);
-  rectEl.setAttribute('stroke-width', 1);
-
-  el.append(rectEl);
-
-  const title = state.title;
-  el.append(createText(title.text, paddingLeft, title.y, state.titleFontSize));
-
-  if (state.properties.length) {
-    state.properties.forEach((property) => {
-      el.append(createText(property.text, paddingLeft, property.y, state.propertyFontSize));
-    })
-  }
-
-  if (state.methods.length) {
-    state.methods.forEach((method) => {
-      el.append(createText(method.text, paddingLeft, method.y, state.methodFontSize));
-    })
-  }
-
-  if (state.separators.length) {
-    state.separators.forEach((separator) => {
-      const path = [
-        { x: 0, y: separator},
-        { x: state.width, y: separator },
-      ];
-
-      el.append(createSeparatorLine(path, state.borderWidth, state.borderColor));
-    });
-  }
-
-  makeDraggable(el, 'typeBox', id);
-  attachContextMenu(el, store, id);
-
-  el.setAttribute('transform', `translate(${state.x}, ${state.y})`);
-
-  return el;
-}
 
 module.exports = function createTypeBoxComponent(svgEl, id, store) {
-  let state;
-  let el;
+  let oldState;
+  let el = document.createElementNS(xmlns, 'g');
 
-  return function() {
-    let isDeleted = false;
+  let renderName = createName(el);
+  let renderRectangle = createRectangle(el);
+  let renderProperties = createProperties(el);
+  let renderMethods = createMethods(el);
+  let renderSeparators = createSeparators(el);
+
+  return function render() {
 
     const newState = store.getState().typeBoxes.find((typeBox) => {
       return typeBox.id === id;
     });
 
-    if (!state) {
-      el = createTypeBox(svgEl, newState, id, store);
-    } else if(!newState) {
+    if (!newState) {
       el.remove();
-      isDeleted = true;
-    } else if(state !== newState) {
-      el.setAttribute('transform', `translate(${newState.x}, ${newState.y})`);
+      oldState = newState;
+      return true;
+
+    } else {
+      renderRectangle(newState);
+      renderName(newState.name)
+      renderProperties(newState.properties);
+      renderMethods(newState.methods);
+      renderSeparators(newState.separators);
+
+      if (!oldState) {
+        svgEl.append(el);
+
+        makeDraggable(el, 'typeBox', id);
+        attachContextMenu(el, store, id);
+        el.setAttribute('transform', `translate(${newState.x}, ${newState.y})`);
+
+      } else if (oldState !== newState) {
+        el.setAttribute('transform', `translate(${newState.x}, ${newState.y})`);
+      }
+
+      oldState = newState;
+
+      return false;
     }
-
-    state = newState;
-
-    return isDeleted;
   }
 }

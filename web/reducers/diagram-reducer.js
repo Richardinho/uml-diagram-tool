@@ -1,3 +1,12 @@
+const {
+  CREATE_TYPE_BOX,
+  DELETE_TYPE_BOX,
+  EDIT_TYPE_BOX,
+  LOAD_DIAGRAM,
+  MOVE_TYPE_BOX,
+  MOVE_NODE,
+} = require('../action.constants.js');
+
 function updateNodes(nodeType, nodes, newX, newY) {
   switch(nodeType) {
     case 'outer1':
@@ -50,12 +59,15 @@ function updateNodes(nodeType, nodes, newX, newY) {
   }
 }
 
-module.exports = (state = {}, action) => {
+module.exports = (state = {
+  horizontalConnectors: [],
+  typeBoxes: [],
+}, action) => {
   switch(action.type) {
-    case 'LOAD_DIAGRAM':
+    case LOAD_DIAGRAM:
       return action.diagram;
 
-    case 'MOVE_TYPE_BOX':
+    case MOVE_TYPE_BOX:
       return {
         ...state,
         horizontalConnectors: state.horizontalConnectors.map((connector) => {
@@ -114,7 +126,7 @@ module.exports = (state = {}, action) => {
         }),
       };
 
-    case 'MOVE_NODE':
+    case MOVE_NODE:
       return {
         ...state,
         horizontalConnectors: state.horizontalConnectors.map(connector => {
@@ -129,17 +141,18 @@ module.exports = (state = {}, action) => {
         }),
       }
 
-    case 'CREATE_TYPE_BOX':
+    case CREATE_TYPE_BOX:
 
       return {
         ...state,
-        typeBoxes: [...state.typeBoxes, action.typeBox ],
+        typeBoxes: [...state.typeBoxes, action.typeBoxViewModel ],
       };
 
-    case 'DELETE_TYPE_BOX':
+    case DELETE_TYPE_BOX:
       const typeBox = action.typeBox;
       return {
         ...state,
+        // disconnect type box from its connectors
         horizontalConnectors: state.horizontalConnectors.map(connector => {
           // if connector is one of typeBox.horizontalConnectors
           const hcs = typeBox.horizontalConnectors;
@@ -177,10 +190,23 @@ module.exports = (state = {}, action) => {
           return connector;
         }),
 
+        // remove type box from store
         typeBoxes: state.typeBoxes.filter(tb => {
           return tb.id !== typeBox.id;
         })
       };
+    case EDIT_TYPE_BOX:
+      
+      return {
+        ...state,
+        typeBoxes: state.typeBoxes.map((typeBox) => {
+          if (typeBox.id === action.id) {
+            return action.typeBoxViewModel;
+          }
+
+          return typeBox;
+        }),
+      }
 
     default:
       return state;

@@ -1,25 +1,35 @@
-const calculateTypeBoxWidth = require('./calculate-type-box-width.js');
 const {createPropertyText} = require('./create-property-text.js');
 const {createMethodText} = require('./create-method-text.js');
+const {calculateWidthFromTypeBoxVM} = require('./calculate-width-from-type-box-vm.js');
 
-function buildTypeBox(stb, svgEl) {
+// config object to use here instead of getting value out of config
+
+const padding = 5;
+const titleFontSize = 16;
+const propertyFontSize = 14;
+const methodFontSize = 14;
+const borderWidth = 1;
+const titleLineHeight = 16;
+const propertyLineHeight = 15;
+const methodLineHeight = 15;
+
+const lineColor = '#666';
+const backgroundColor = '#ffffce';
+const textColor = '#333';
+
+// buildTypeBoxViewModel
+function buildTypeBoxViewModel(config, svgEl) {
   let tb = {};
 
-  const width = calculateTypeBoxWidth(stb, svgEl);
+  tb.id = config.id;
+  tb.x = config.x;
+  tb.y = config.y;
 
-  tb.id = stb.id;
-  tb.x = stb.x;
-  tb.y = stb.y;
-  tb.width = width;
-
-  tb.paddingLeft = stb.padding;
-  tb.borderWidth = stb.borderWidth;
-  tb.titleFontSize = stb.titleFontSize;
-  tb.propertyFontSize = stb.propertyFontSize;
-  tb.methodFontSize = stb.methodFontSize;
-  tb.backgroundColor = stb.backgroundColor;
-  tb.borderColor = stb.borderColor;
-  tb.horizontalConnectors = stb.horizontalConnectors;
+  tb.paddingLeft = padding;
+  tb.borderWidth = borderWidth;
+  tb.horizontalConnectors = config.horizontalConnectors;
+  tb.backgroundColor = backgroundColor;
+  tb.borderColor = lineColor;
 
   let currentY = 0;
 
@@ -27,50 +37,82 @@ function buildTypeBox(stb, svgEl) {
   tb.methods = [];
   tb.separators = [];
 
-  currentY += stb.padding;
+  currentY += padding;
 
-  tb.title = {
-    y: currentY + (stb.titleLineHeight / 2),
-    text: stb.title,
+  tb.name = {
+    text: config.name,
+    color: textColor,
+    x: padding,
+    y: currentY + (titleLineHeight / 2),
+    fontSize: titleFontSize,
   };
 
-  currentY += stb.titleLineHeight;
-  currentY += stb.padding;
+  currentY += titleLineHeight;
+  currentY += padding;
 
-  if (stb.properties.length > 0) {
+  if (config.properties.length > 0) {
 
-    tb.separators.push(currentY);
-    currentY += stb.padding;
+    tb.separators.push({
+      y: currentY,
+      color: lineColor,
+      thickness: 1,
+      currentY,
+    });
 
-    for (let i = 0; i < stb.properties.length; i++) {
+    currentY += padding;
+
+    for (let i = 0; i < config.properties.length; i++) {
       tb.properties[i] = {
-        text: createPropertyText(stb.properties[i]),
-        y: currentY + (stb.propertyLineHeight / 2),
+        text: config.properties[i],
+        fontSize: propertyFontSize,
+        color: textColor,
+        x: padding,
+        y: currentY + (propertyLineHeight / 2),
       };
 
-      currentY += stb.propertyLineHeight;
+      currentY += propertyLineHeight;
     }
 
-    currentY += stb.padding;
+    currentY += padding;
   }
 
-  if (stb.methods.length > 0) {
-    tb.separators.push(currentY);
-    currentY += stb.padding;
+  if (config.methods.length > 0) {
+    tb.separators.push({
+      y: currentY,
+      color: lineColor,
+      thickness: 1,
+      currentY,
+    });
 
-    for (let i = 0; i < stb.methods.length; i++) {
+    currentY += padding;
+
+    for (let i = 0; i < config.methods.length; i++) {
       tb.methods[i] = {
-        text: createMethodText(stb.methods[i]),
-        y: currentY + (stb.methodLineHeight / 2),
+        text: config.methods[i],
+        fontSize: methodFontSize,
+        color: textColor,
+        x: padding,
+        y: currentY + (methodLineHeight / 2),
       };
 
-      currentY += stb.methodLineHeight;
+      currentY += methodLineHeight;
     }
 
-    currentY += stb.padding;
+    currentY += padding;
   }
 
   tb.height = currentY;
+  tb.width = calculateWidthFromTypeBoxVM(tb, svgEl);
+
+  // update separators array now that we know the width
+  tb.separators = tb.separators.map(separator => {
+    return {
+      ...separator,
+      width: tb.width,
+    };
+  });
+
+
   return tb;
 }
 
@@ -79,6 +121,7 @@ function buildTypeBox(stb, svgEl) {
  *  that we can use to generate svg elements.
  *  Mostly calculating dimensions
  */
+
 
 function buildDiagram(source, svgEl) {
 
@@ -97,6 +140,7 @@ function buildDiagram(source, svgEl) {
     return result;
   }
 
+  /*
   for (let i =0; i < source.horizontalConnectors.length; i++) {
     let hs = source.horizontalConnectors[i];
 
@@ -107,17 +151,24 @@ function buildDiagram(source, svgEl) {
       nodes: createNodes(hs.id, hs.nodes),
     };
   }
+  */
 
   result.typeBoxes = [];
 
+  /*
   for(let i =0; i < source.typeBoxes.length; i++) {
     result.typeBoxes.push(buildTypeBox(source.typeBoxes[i], svgEl));
   }
+  */
 
-  return result;
+
+  return {
+    typeBoxes : [],
+    horizontalConnectors: [],
+  };
 }
 
 module.exports = {
-  buildTypeBox,
+  buildTypeBoxViewModel,
   buildDiagram,
 }
