@@ -1,7 +1,10 @@
 const {MOVE_NODE} = require('../action.constants.js');
 const {getTypeBox} = require('../store/type-box.js');
+const {detectTypeBoxCollision} = require('../new-utility/detect-type-box-collision.js');
 
 module.exports = function moveNodeAction(event, store) {
+
+  const {clientX, clientY, altKey } = event.detail;
 
   const nodeId = event.detail.id;
   const connectorId = nodeId.substring(0, nodeId.indexOf('_'));
@@ -38,8 +41,30 @@ module.exports = function moveNodeAction(event, store) {
         newY = Math.min(newY, typeBox.y + typeBox.height);
 
       } else {
-        newX = outerNode1.x + event.detail.xdiff;
-        newY = outerNode1.y + event.detail.ydiff;
+
+        if (altKey) {
+          const typeBoxCollision = detectTypeBoxCollision(store, clientX, clientY);
+
+          if (typeBoxCollision) {
+            const typeBoxX = typeBoxCollision.x;
+            const typeBoxY = typeBoxCollision.y;
+            const typeBoxWidth = typeBoxCollision.width;
+            const typeBoxHeight = typeBoxCollision.height;
+
+            newX = typeBoxX;
+            newY = outerNode1.y + event.detail.ydiff;
+            attachedTypeBoxId = typeBoxCollision.id; 
+
+          } else {
+            newX = outerNode1.x + event.detail.xdiff;
+            newY = outerNode1.y + event.detail.ydiff;
+          }
+        } else {
+
+          newX = outerNode1.x + event.detail.xdiff;
+          newY = outerNode1.y + event.detail.ydiff;
+        }
+        
       }
 
       break;
@@ -88,8 +113,27 @@ module.exports = function moveNodeAction(event, store) {
         newY = Math.max(newY, typeBox.y);
         newY = Math.min(newY, typeBox.y + typeBox.height);
       } else {
-        newX = outerNode2.x + event.detail.xdiff;
-        newY = innerNode2.y + event.detail.ydiff;
+        if (altKey) {
+          const typeBoxCollision = detectTypeBoxCollision(store, clientX, clientY);
+
+          if (typeBoxCollision) {
+            const typeBoxX = typeBoxCollision.x;
+            const typeBoxY = typeBoxCollision.y;
+            const typeBoxWidth = typeBoxCollision.width;
+            const typeBoxHeight = typeBoxCollision.height;
+
+            newX = typeBoxX;
+            newY = innerNode2.y + event.detail.ydiff;
+            attachedTypeBoxId = typeBoxCollision.id; 
+
+          } else {
+            newX = outerNode2.x + event.detail.xdiff;
+            newY = innerNode2.y + event.detail.ydiff;
+          }
+        } else {
+          newX = outerNode2.x + event.detail.xdiff;
+          newY = innerNode2.y + event.detail.ydiff;
+        }
       }
 
       break;
@@ -105,5 +149,6 @@ module.exports = function moveNodeAction(event, store) {
     nodeType,
     newX,
     newY,
+    attachedTypeBoxId,
   };
 }

@@ -7,7 +7,7 @@ const {
   MOVE_NODE,
 } = require('../action.constants.js');
 
-function updateNodes(nodeType, nodes, newX, newY) {
+function updateNodes(nodeType, nodes, newX, newY, attachedTypeBoxId) {
   switch(nodeType) {
     case 'outer1':
       return {
@@ -16,6 +16,7 @@ function updateNodes(nodeType, nodes, newX, newY) {
           ...nodes.outer1,
           x: newX,
           y: newY,
+          typeBox: attachedTypeBoxId,
         },
       };
     case 'inner1':
@@ -48,6 +49,7 @@ function updateNodes(nodeType, nodes, newX, newY) {
         outer2: {
           ...nodes.outer2,
           x: newX,
+          typeBox: attachedTypeBoxId,
         },
         inner2: {
           ...nodes.inner2,
@@ -92,7 +94,7 @@ module.exports = (state = {
                   }
                 }
               };
-            } else if(hc.nodeType === 'outer2') {
+            } else if (hc.nodeType === 'outer2') {
               return {
                 ...connector,
                 nodes: {
@@ -129,11 +131,27 @@ module.exports = (state = {
     case MOVE_NODE:
       return {
         ...state,
+        typeBoxes: state.typeBoxes.map(typeBox => {
+          if (typeBox.id === action.attachedTypeBoxId) {
+            return {
+              ...typeBox,
+              horizontalConnectors: [
+                ...typeBox.horizontalConnectors,
+                {
+                  nodeType: action.nodeType,
+                  id: action.connectorId
+                }
+              ],
+            };
+          }
+
+          return typeBox;
+        }),
         horizontalConnectors: state.horizontalConnectors.map(connector => {
           if (connector.id === action.connectorId) {
             return {
               ...connector,
-              nodes: updateNodes(action.nodeType, connector.nodes, action.newX, action.newY),
+              nodes: updateNodes(action.nodeType, connector.nodes, action.newX, action.newY, action.attachedTypeBoxId),
             };
           }
 

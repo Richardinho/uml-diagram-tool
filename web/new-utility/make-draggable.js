@@ -1,4 +1,5 @@
 const DRAG_EVENT = 'drag';
+const { POINTER_DOWN_ON_ELEMENT } = '../event.constants.js';
 
 module.exports = function makeDraggable(el, type, id) {
 
@@ -6,6 +7,25 @@ module.exports = function makeDraggable(el, type, id) {
   let startY;
 
   el.addEventListener('pointerdown', (event) => {
+
+    /*
+     * if this event occurs on an end node
+     * whilst holding down alt
+     * and this node is connected to a type box
+     * then disconnect the node from the type box
+     */
+
+    const pointerDownEvent = new CustomEvent('foobar', {
+      bubbles: true,
+      detail: {
+        id,
+        type,
+        altKey: event.altKey,
+      }
+    });
+
+    el.dispatchEvent(pointerDownEvent);
+
     event.stopPropagation();
 
     el.setPointerCapture(event.pointerId);
@@ -14,6 +34,7 @@ module.exports = function makeDraggable(el, type, id) {
   });
 
   el.addEventListener('pointermove', (event) => {
+
     event.stopPropagation();
 
     if (el.hasPointerCapture(event.pointerId)) {
@@ -24,6 +45,9 @@ module.exports = function makeDraggable(el, type, id) {
           type,
           xdiff: event.clientX - startX,
           ydiff: event.clientY - startY,
+          altKey: event.altKey,
+          clientX: event.clientX,
+          clientY: event.clientY,
         }
       });
 
