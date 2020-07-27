@@ -1,6 +1,9 @@
 const { createStore } = require('redux');
 const createTypeBoxForm = require('./modals/add-type-box/add-type-box.js');
-const {CREATE_TYPE_BOX} = require('./action.constants.js');
+const {
+  CREATE_TYPE_BOX,
+  CREATE_HORIZONTAL_CONNECTOR,
+} = require('./action.constants.js');
 
 const semanticDiagram = require('./diagram.js');
 const xmlns = require('./new-utility/svg-utils/xmlns.js');
@@ -8,6 +11,7 @@ const {buildDiagram, buildTypeBoxViewModel} = require('./new-utility/build-diagr
 const initialiseDiagram = require('./renderers/initialise-diagram.js');
 const createTypeBoxComponent = require('./renderers/type-box.js');
 const {mergeFormDataWithViewModel} = require('./new-utility/merge-form-data-with-view-model.js');
+const createConnectorComponent = require('./renderers/connector.js');
 
 //  reducer
 const diagramReducer = require('./reducers/diagram-reducer.js');
@@ -55,6 +59,27 @@ function baseViewModel(id) {
     y: 100,
   };
 }
+
+ipcRenderer.on('create:horizontal-connector', () => {
+
+  const newId = uniqid();
+
+  components.push(createConnectorComponent(svgEl, newId));
+
+  store.dispatch({
+    type: CREATE_HORIZONTAL_CONNECTOR,
+    data: {
+      id: newId,
+      lineColor: 'red',
+      nodes: {
+        outer1: { x: 100, y: 100, id: newId + '_outer1' },
+        inner1: { x: 200, id: newId + '_inner1' },
+        inner2: { y: 300, id: newId + '_inner2' },
+        outer2: { x: 400, id: newId + '_outer2' },
+      }
+    }
+  });
+});
 
 ipcRenderer.on('create:typeBox', () => {
 

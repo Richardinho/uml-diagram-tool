@@ -195,6 +195,19 @@ module.exports = (state = {
           return tb.id !== typeBox.id;
         })
       };
+    case CREATE_HORIZONTAL_CONNECTOR:
+      console.log('create horizontal connector');
+      return {
+        
+        ...state,
+
+        horizontalConnectors: [
+          ...state.horizontalConnectors, 
+          action.data,
+        ],
+
+      };
+
     case EDIT_TYPE_BOX:
       
       return {

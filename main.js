@@ -60,6 +60,17 @@ const mainMenuTemplate = [
         click(menuItem, browserItem, event) {
           createAddTypeBoxWindow();
         },
+      },
+      {
+        label: 'Add Connector',
+        submenu: [
+          {
+            label: 'Horizontal',
+            click() {
+              BrowserWindow.getFocusedWindow().webContents.send('create:horizontal-connector');
+            }
+          },
+        ],
       }
     ]
   }
