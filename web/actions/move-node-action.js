@@ -24,16 +24,14 @@ module.exports = function moveNodeAction(event, store) {
   const innerNode2 = connectorModel.nodes['inner2'];
   const outerNode2 = connectorModel.nodes['outer2'];
 
-  let attachedTypeBoxId;
+  let typeBoxToConnectId;
   let typeBox;
 
   switch(nodeType) {
     case 'outer1':
       if (outerNode1.typeBox) {
 
-        attachedTypeBoxId = outerNode1.typeBox;
-
-        typeBox = getTypeBox(store, attachedTypeBoxId)
+        typeBox = getTypeBox(store, outerNode1.typeBox)
 
         newX = outerNode1.x;
         newY = outerNode1.y + event.detail.ydiff;
@@ -53,7 +51,7 @@ module.exports = function moveNodeAction(event, store) {
 
             newX = typeBoxX;
             newY = outerNode1.y + event.detail.ydiff;
-            attachedTypeBoxId = typeBoxCollision.id; 
+            typeBoxToConnectId = typeBoxCollision.id; 
 
           } else {
             newX = outerNode1.x + event.detail.xdiff;
@@ -71,9 +69,7 @@ module.exports = function moveNodeAction(event, store) {
     case 'inner1':
       if (outerNode1.typeBox) {
 
-        attachedTypeBoxId = outerNode1.typeBox;
-
-        typeBox = getTypeBox(store, attachedTypeBoxId)
+        typeBox = getTypeBox(store, outerNode1.typeBox)
 
         newX = innerNode1.x + event.detail.xdiff;
         newY = outerNode1.y + event.detail.ydiff;
@@ -88,9 +84,8 @@ module.exports = function moveNodeAction(event, store) {
       break;
     case 'inner2':
       if (outerNode2.typeBox) {
-        attachedTypeBoxId = outerNode2.typeBox;
 
-        typeBox = getTypeBox(store, attachedTypeBoxId)
+        typeBox = getTypeBox(store, outerNode2.typeBox)
 
         newX = innerNode1.x + event.detail.xdiff;
         newY = innerNode2.y + event.detail.ydiff;
@@ -104,9 +99,8 @@ module.exports = function moveNodeAction(event, store) {
       break;
     case 'outer2':
       if (outerNode2.typeBox) {
-        attachedTypeBoxId = outerNode2.typeBox;
 
-        typeBox = getTypeBox(store, attachedTypeBoxId)
+        typeBox = getTypeBox(store, outerNode2.typeBox)
 
         newX = outerNode2.x;
         newY = innerNode2.y + event.detail.ydiff;
@@ -124,7 +118,7 @@ module.exports = function moveNodeAction(event, store) {
 
             newX = typeBoxX;
             newY = innerNode2.y + event.detail.ydiff;
-            attachedTypeBoxId = typeBoxCollision.id; 
+            typeBoxToConnectId = typeBoxCollision.id; 
 
           } else {
             newX = outerNode2.x + event.detail.xdiff;
@@ -149,6 +143,6 @@ module.exports = function moveNodeAction(event, store) {
     nodeType,
     newX,
     newY,
-    attachedTypeBoxId,
+    typeBoxToConnectId,
   };
 }

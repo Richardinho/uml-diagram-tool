@@ -7,6 +7,11 @@ const {
   MOVE_NODE,
 } = require('../action.constants.js');
 
+/*
+ *  attachedTypeBoxId can be undefined, in which case, we just want to keep the
+ *  existing value
+ */
+
 function updateNodes(nodeType, nodes, newX, newY, attachedTypeBoxId) {
   switch(nodeType) {
     case 'outer1':
@@ -16,7 +21,7 @@ function updateNodes(nodeType, nodes, newX, newY, attachedTypeBoxId) {
           ...nodes.outer1,
           x: newX,
           y: newY,
-          typeBox: attachedTypeBoxId,
+          typeBox: attachedTypeBoxId || nodes.outer1.typeBox,
         },
       };
     case 'inner1':
@@ -49,7 +54,7 @@ function updateNodes(nodeType, nodes, newX, newY, attachedTypeBoxId) {
         outer2: {
           ...nodes.outer2,
           x: newX,
-          typeBox: attachedTypeBoxId,
+          typeBox: attachedTypeBoxId || nodes.outer2.typeBox,
         },
         inner2: {
           ...nodes.inner2,
@@ -132,7 +137,7 @@ module.exports = (state = {
       return {
         ...state,
         typeBoxes: state.typeBoxes.map(typeBox => {
-          if (typeBox.id === action.attachedTypeBoxId) {
+          if (typeBox.id === action.typeBoxToConnectId) {
             return {
               ...typeBox,
               horizontalConnectors: [
@@ -151,7 +156,7 @@ module.exports = (state = {
           if (connector.id === action.connectorId) {
             return {
               ...connector,
-              nodes: updateNodes(action.nodeType, connector.nodes, action.newX, action.newY, action.attachedTypeBoxId),
+              nodes: updateNodes(action.nodeType, connector.nodes, action.newX, action.newY, action.typeBoxToConnectId),
             };
           }
 
