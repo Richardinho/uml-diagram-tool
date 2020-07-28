@@ -3,6 +3,7 @@ const {
   DELETE_TYPE_BOX,
   EDIT_TYPE_BOX,
   LOAD_DIAGRAM,
+  DISCONNECT_NODE,
   MOVE_TYPE_BOX,
   MOVE_NODE,
 } = require('../action.constants.js');
@@ -157,6 +158,38 @@ module.exports = (state = {
             return {
               ...connector,
               nodes: updateNodes(action.nodeType, connector.nodes, action.newX, action.newY, action.typeBoxToConnectId),
+            };
+          }
+
+          return connector;
+        }),
+      }
+
+    case DISCONNECT_NODE:
+      return {
+        ...state,
+        typeBoxes: state.typeBoxes.map(typeBox => {
+          if (typeBox.id === action.typeBoxId) {
+            return {
+              ...typeBox,
+              horizontalConnectors: typeBox.horizontalConnectors.filter((connector) => {
+                return connector.id !== action.connectorId && connector.nodeType !== action.nodeType;
+              }) 
+
+            };
+          }
+        }),
+        horizontalConnectors: state.horizontalConnectors.map(connector => {
+          if (connector.id === action.connectorId) {
+            return {
+              ...connector,
+              nodes: {
+                ...connector.nodes,
+                [action.nodeType]: {
+                  ...connector.nodes[action.nodeType],
+                  typeBox: '',
+                }
+              },
             };
           }
 

@@ -15,16 +15,18 @@ module.exports = function makeDraggable(el, type, id) {
      * then disconnect the node from the type box
      */
 
-    const pointerDownEvent = new CustomEvent('foobar', {
-      bubbles: true,
-      detail: {
-        id,
-        type,
-        altKey: event.altKey,
-      }
-    });
+    if (type === 'node') {
+      const pointerDownEvent = new CustomEvent('pointer-down-on-node', {
+        bubbles: true,
+        detail: {
+          id,
+          type,
+          altKey: event.altKey,
+        }
+      });
 
-    el.dispatchEvent(pointerDownEvent);
+      el.dispatchEvent(pointerDownEvent);
+    }
 
     event.stopPropagation();
 

@@ -5,4 +5,5 @@ module.exports.EDIT_TYPE_BOX = 'edit-type-box';
 module.exports.LOAD_DIAGRAM = 'load-diagram';
 module.exports.MOVE_TYPE_BOX = 'move-type-box';
 module.exports.MOVE_NODE = 'move-node';
+module.exports.DISCONNECT_NODE = 'disconnect-node';
 

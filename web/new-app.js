@@ -5,6 +5,7 @@ const {getConnector} = require('./store/connector.js');
 const {
   CREATE_TYPE_BOX,
   CREATE_HORIZONTAL_CONNECTOR,
+  DISCONNECT_NODE,
 } = require('./action.constants.js');
 
 const {
@@ -165,21 +166,24 @@ function createDiagram() {
     }
   });
 
-  svgEl.addEventListener('foobar',  event => {
-    if (event.detail.type === 'node') {
-      if (event.detail.altKey) {
-        const nodeId = event.detail.id;
-        const connectorId = nodeId.substring(0, nodeId.indexOf('_'));
-        const nodeType = nodeId.substring(nodeId.indexOf('_') + 1);
+  svgEl.addEventListener('pointer-down-on-node',  event => {
+    if (event.detail.altKey) {
+      const nodeId = event.detail.id;
+      const connectorId = nodeId.substring(0, nodeId.indexOf('_'));
+      const nodeType = nodeId.substring(nodeId.indexOf('_') + 1);
 
-        if (nodeType === 'outer1' || nodeType === 'outer2') {
-          const connector = getConnector(store, connectorId);
-          const node = get(connector, `nodes[${nodeType}]`);
+      if (nodeType === 'outer1' || nodeType === 'outer2') {
+        const connector = getConnector(store, connectorId);
+        const node = get(connector, `nodes[${nodeType}]`);
 
-          if (node) {
-            if (node.typeBox) {
-              //  then disconnect it
-            }
+        if (node) {
+          if (node.typeBox) {
+            store.dispatch({
+              type: DISCONNECT_NODE,
+              connectorId,
+              nodeType, 
+              typeBoxId: node.typeBox,
+            });
           }
         }
       }
