@@ -38,7 +38,7 @@ module.exports = function moveNodeAction(event, store) {
       if (outerNode1.typeBox) {
 
         typeBox = getTypeBox(store, outerNode1.typeBox)
-
+        
         newX = outerNode1.x;
         newY = outerNode1.y + event.detail.ydiff;
         newY = Math.max(newY, typeBox.y);
@@ -73,11 +73,17 @@ module.exports = function moveNodeAction(event, store) {
 
       break;
     case NODE_INNER_1:
-      if (outerNode1.typeBox) {
+
+      // check if outerNode 1 and if outerNode2 are connected to type boxes
+      // if (outerNode1.typeBox || outerNode2.typeBox) {
+     if (outerNode1.typeBox) {
+        // detect if newX is greater than right edge of type box
 
         typeBox = getTypeBox(store, outerNode1.typeBox)
 
         newX = innerNode1.x + event.detail.xdiff;
+        // is newX greater than typeBox.x + typeBox.width ? 
+       // if outerNode1 is connected then y value is dependent on the size of the box
         newY = outerNode1.y + event.detail.ydiff;
         newY = Math.max(newY, typeBox.y);
         newY = Math.min(newY, typeBox.y + typeBox.height);

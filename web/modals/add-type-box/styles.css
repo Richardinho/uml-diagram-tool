@@ -4,6 +4,10 @@ body {
   font-family: helvetica;
 }
 
+dialog {
+  width: 800px;
+}
+
 .name {
 }
 
