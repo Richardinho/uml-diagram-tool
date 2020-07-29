@@ -7,7 +7,7 @@ const positionConnector = require('./position-connector.js');
 const OUTLINE_COLOR = '#777';
 const radius = 20;
 
-function createConnector(svgEl, state) {
+function createConnector(svgEl, state, id) {
   let el = document.createElementNS(xmlns, 'g');
 
   let pathEl = document.createElementNS(xmlns, 'path');
@@ -62,10 +62,10 @@ function createConnector(svgEl, state) {
   el.append(inner2El);
   el.append(outer2El);
 
-  makeDraggable(outer1El, 'node', nodes.outer1.id);
-  makeDraggable(inner1El, 'node', nodes.inner1.id);
-  makeDraggable(inner2El, 'node', nodes.inner2.id);
-  makeDraggable(outer2El, 'node', nodes.outer2.id);
+  makeDraggable(outer1El, 'node', nodes.outer1.id, {connectorId: id, nodeType: 'outer1'});
+  makeDraggable(inner1El, 'node', nodes.inner1.id, {connectorId: id, nodeType: 'inner1'});
+  makeDraggable(inner2El, 'node', nodes.inner2.id, {connectorId: id, nodeType: 'inner2'});
+  makeDraggable(outer2El, 'node', nodes.outer2.id, {connectorId: id, nodeType: 'outer2'});
 
   svgEl.append(el);
 
@@ -96,7 +96,7 @@ module.exports = function createConnectorComponent(svgEl, id) {
     });
 
     if (!state) {
-      ({el, outer1El, inner1El, inner2El, outer2El, pathEl } = createConnector(svgEl, newState));
+      ({el, outer1El, inner1El, inner2El, outer2El, pathEl } = createConnector(svgEl, newState, id));
 
     } else if (state !== newState) {
 

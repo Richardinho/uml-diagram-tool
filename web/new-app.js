@@ -9,6 +9,13 @@ const {
 } = require('./action.constants.js');
 
 const {
+  NODE_OUTER_1,
+  NODE_INNER_1,
+  NODE_INNER_2,
+  NODE_OUTER_2,
+} = require('./node.constants.js');
+
+const {
   POINTER_DOWN_ON_ELEMENT,
 } = require('./event.constants.js');
 
@@ -79,10 +86,10 @@ ipcRenderer.on('create:horizontal-connector', () => {
       id: newId,
       lineColor: 'red',
       nodes: {
-        outer1: { x: 100, y: 100, id: newId + '_outer1' },
-        inner1: { x: 200, id: newId + '_inner1' },
-        inner2: { y: 300, id: newId + '_inner2' },
-        outer2: { x: 400, id: newId + '_outer2' },
+        outer1: { x: 100, y: 100 },
+        inner1: { x: 200 },
+        inner2: { y: 300 },
+        outer2: { x: 400 },
       }
     }
   });
@@ -168,11 +175,9 @@ function createDiagram() {
 
   svgEl.addEventListener('pointer-down-on-node',  event => {
     if (event.detail.altKey) {
-      const nodeId = event.detail.id;
-      const connectorId = nodeId.substring(0, nodeId.indexOf('_'));
-      const nodeType = nodeId.substring(nodeId.indexOf('_') + 1);
+      const {nodeType, connectorId } = event.detail.extras;
 
-      if (nodeType === 'outer1' || nodeType === 'outer2') {
+      if (nodeType === NODE_OUTER_1 || nodeType === NODE_OUTER_2) {
         const connector = getConnector(store, connectorId);
         const node = get(connector, `nodes[${nodeType}]`);
 

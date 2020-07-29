@@ -1,7 +1,7 @@
 const DRAG_EVENT = 'drag';
 const { POINTER_DOWN_ON_ELEMENT } = '../event.constants.js';
 
-module.exports = function makeDraggable(el, type, id) {
+module.exports = function makeDraggable(el, type, id, extras) {
 
   let startX;
   let startY;
@@ -22,6 +22,7 @@ module.exports = function makeDraggable(el, type, id) {
           id,
           type,
           altKey: event.altKey,
+          extras,
         }
       });
 
@@ -50,6 +51,7 @@ module.exports = function makeDraggable(el, type, id) {
           altKey: event.altKey,
           clientX: event.clientX,
           clientY: event.clientY,
+          extras,
         }
       });
 

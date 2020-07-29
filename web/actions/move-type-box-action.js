@@ -1,5 +1,12 @@
 const {MOVE_TYPE_BOX} = require('../action.constants.js');
 const {getConnector} = require('../store/connector.js');
+const {
+  NODE_OUTER_1,
+  NODE_INNER_1,
+  NODE_INNER_2,
+  NODE_OUTER_2,
+} = require('../node.constants.js');
+
 module.exports = (event, store) => {
   const id = event.detail.id;
 
@@ -25,8 +32,8 @@ module.exports = (event, store) => {
 
       let nodeY;
 
-      if (nodeType === 'outer2') {
-        nodeY = connector.nodes['inner2'].y;
+      if (nodeType === NODE_OUTER_2) {
+        nodeY = connector.nodes[NODE_INNER_2].y;
       } else {
         nodeY = node.y;
       }

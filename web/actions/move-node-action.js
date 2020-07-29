@@ -2,13 +2,19 @@ const {MOVE_NODE} = require('../action.constants.js');
 const {getTypeBox} = require('../store/type-box.js');
 const {detectTypeBoxCollision} = require('../new-utility/detect-type-box-collision.js');
 
+const {
+  NODE_OUTER_1,
+  NODE_INNER_1,
+  NODE_INNER_2,
+  NODE_OUTER_2,
+} = require('../node.constants.js');
+
 module.exports = function moveNodeAction(event, store) {
 
   const {clientX, clientY, altKey } = event.detail;
 
-  const nodeId = event.detail.id;
-  const connectorId = nodeId.substring(0, nodeId.indexOf('_'));
-  const nodeType = nodeId.substring(nodeId.indexOf('_') + 1);
+  const connectorId = event.detail.extras.connectorId;
+  const nodeType = event.detail.extras.nodeType;
 
   const connectorModel = store.getState().horizontalConnectors.find(connector => {
     return connector.id === connectorId;
@@ -19,16 +25,16 @@ module.exports = function moveNodeAction(event, store) {
   let newX;
   let newY;
 
-  const outerNode1 = connectorModel.nodes['outer1'];
-  const innerNode1 = connectorModel.nodes['inner1'];
-  const innerNode2 = connectorModel.nodes['inner2'];
-  const outerNode2 = connectorModel.nodes['outer2'];
+  const outerNode1 = connectorModel.nodes[NODE_OUTER_1];
+  const innerNode1 = connectorModel.nodes[NODE_INNER_1];
+  const innerNode2 = connectorModel.nodes[NODE_INNER_2];
+  const outerNode2 = connectorModel.nodes[NODE_OUTER_2];
 
   let typeBoxToConnectId;
   let typeBox;
 
   switch(nodeType) {
-    case 'outer1':
+    case NODE_OUTER_1:
       if (outerNode1.typeBox) {
 
         typeBox = getTypeBox(store, outerNode1.typeBox)
@@ -66,7 +72,7 @@ module.exports = function moveNodeAction(event, store) {
       }
 
       break;
-    case 'inner1':
+    case NODE_INNER_1:
       if (outerNode1.typeBox) {
 
         typeBox = getTypeBox(store, outerNode1.typeBox)
@@ -82,7 +88,7 @@ module.exports = function moveNodeAction(event, store) {
       }
 
       break;
-    case 'inner2':
+    case NODE_INNER_2:
       if (outerNode2.typeBox) {
 
         typeBox = getTypeBox(store, outerNode2.typeBox)
@@ -97,7 +103,7 @@ module.exports = function moveNodeAction(event, store) {
       }
 
       break;
-    case 'outer2':
+    case NODE_OUTER_2:
       if (outerNode2.typeBox) {
 
         typeBox = getTypeBox(store, outerNode2.typeBox)
