@@ -14,6 +14,7 @@ module.exports = (event, store) => {
     return typeBox.id === id;
   });
 
+  // newX may be x + width
   const newX = typeBoxModel.x + event.detail.xdiff;
   const newY = typeBoxModel.y + event.detail.ydiff;
 
@@ -34,6 +35,7 @@ module.exports = (event, store) => {
 
       if (nodeType === NODE_OUTER_2) {
         nodeY = connector.nodes[NODE_INNER_2].y;
+        
       } else {
         nodeY = node.y;
       }
