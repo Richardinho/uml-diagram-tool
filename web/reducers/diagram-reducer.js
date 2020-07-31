@@ -1,27 +1,29 @@
+const {moveNodeReducer} = require('./move-node.reducer.js');
+const {moveVerticalNodeReducer} = require('./move-vertical-node.reducer.js');
+const {disconnectNodeReducer} = require('./disconnect-node.reducer.js');
+const {moveTypeBoxReducer} = require('./move-type-box.reducer.js');
+const {deleteTypeBoxReducer} = require('./delete-type-box.reducer.js');
+
 const {
   CREATE_TYPE_BOX,
+  CREATE_HORIZONTAL_CONNECTOR,
+  CREATE_VERTICAL_CONNECTOR,
   DELETE_TYPE_BOX,
   EDIT_TYPE_BOX,
   LOAD_DIAGRAM,
   DISCONNECT_NODE,
   MOVE_TYPE_BOX,
   MOVE_NODE,
+  MOVE_VERTICAL_NODE,
 } = require('../action.constants.js');
-const {moveNodeReducer} = require('./move-node.reducer.js');
-const {disconnectNodeReducer} = require('./disconnect-node.reducer.js');
-const {moveTypeBoxReducer} = require('./move-type-box.reducer.js');
-const {deleteTypeBoxReducer} = require('./delete-type-box.reducer.js');
 
-/*
- *  attachedTypeBoxId can be undefined, in which case, we just want to keep the
- *  existing value
- */
-
-
-module.exports = (state = {
+const initialState = {
   horizontalConnectors: [],
+  verticalConnectors: [],
   typeBoxes: [],
-}, action) => {
+};
+
+module.exports = (state = initialState, action) => {
   switch(action.type) {
     case LOAD_DIAGRAM:
       return action.diagram;
@@ -31,6 +33,9 @@ module.exports = (state = {
 
     case MOVE_NODE:
       return moveNodeReducer(state, action);
+
+    case MOVE_VERTICAL_NODE:
+      return moveVerticalNodeReducer(state, action);
 
     case DISCONNECT_NODE:
       return disconnectNodeReducer(state, action);
@@ -43,6 +48,15 @@ module.exports = (state = {
 
     case DELETE_TYPE_BOX:
       return deleteTypeBoxReducer(state, action);
+
+    case CREATE_VERTICAL_CONNECTOR:
+      return {
+        ...state,
+        verticalConnectors: [
+          ...state.verticalConnectors,
+          action.data,
+        ],
+      };
 
     case CREATE_HORIZONTAL_CONNECTOR:
       return {

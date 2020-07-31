@@ -70,6 +70,12 @@ const mainMenuTemplate = [
               BrowserWindow.getFocusedWindow().webContents.send('create:horizontal-connector');
             }
           },
+          {
+            label: 'Vertical',
+            click() {
+              BrowserWindow.getFocusedWindow().webContents.send('create:vertical-connector');
+            }
+          },
         ],
       }
     ]

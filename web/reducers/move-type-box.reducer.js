@@ -5,6 +5,7 @@
 function moveTypeBoxReducer(state, action) {
   return {
     ...state,
+    // todo: handle vertical connectors here
     horizontalConnectors: state.horizontalConnectors.map((connector) => {
       const hcs = action.horizontalConnectors;
 

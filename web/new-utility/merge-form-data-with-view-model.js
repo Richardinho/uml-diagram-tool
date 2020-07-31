@@ -7,6 +7,7 @@ function mergeFormDataWithViewModel(viewModel, formData) {
     x: viewModel.x,
     y: viewModel.y,
     horizontalConnectors: viewModel.horizontalConnectors,
+    verticalConnectors: viewModel.verticalConnectors,
   };
 }
 

@@ -5,6 +5,7 @@ const {getConnector} = require('./store/connector.js');
 const {
   CREATE_TYPE_BOX,
   CREATE_HORIZONTAL_CONNECTOR,
+  CREATE_VERTICAL_CONNECTOR,
   DISCONNECT_NODE,
 } = require('./action.constants.js');
 
@@ -26,6 +27,7 @@ const initialiseDiagram = require('./renderers/initialise-diagram.js');
 const createTypeBoxComponent = require('./renderers/type-box.js');
 const {mergeFormDataWithViewModel} = require('./new-utility/merge-form-data-with-view-model.js');
 const createConnectorComponent = require('./renderers/connector.js');
+const {createVerticalConnector} = require('./renderers/connectors/vertical-connector/create.js');
 
 //  reducer
 const diagramReducer = require('./reducers/diagram-reducer.js');
@@ -33,8 +35,10 @@ const diagramReducer = require('./reducers/diagram-reducer.js');
 //  actions
 const moveNodeAction = require('./actions/move-node-action.js');
 const moveTypeBoxAction = require('./actions/move-type-box-action.js');
+const {moveVerticalNodeAction} = require('./actions/move-vertical-node/move-vertical-node.action.js');
 
 const {ipcRenderer} = require('electron');
+
 const uniqid = require('uniqid');
 
 const svgEl = document.getElementById('diagram');
@@ -69,10 +73,33 @@ function baseViewModel(id) {
   return {
     id,
     horizontalConnectors: [],
+    verticalConnectors: [],
     x: 100,
     y: 100,
   };
 }
+
+ipcRenderer.on('create:vertical-connector', () => {
+  const newId = uniqid();
+
+  const foo = createVerticalConnector(svgEl, newId);
+  //components.push(createVerticalConnector(svgEl, newId));
+  components.push(foo);
+
+  store.dispatch({
+    type: CREATE_VERTICAL_CONNECTOR,
+    data: {
+      id: newId,
+      lineColor: 'green',
+      nodes: {
+        outer1: { x: 100, y: 100 },
+        inner1: { y: 200 },
+        inner2: { x: 200 },
+        outer2: { y: 300 },
+      },
+    },
+  });
+});
 
 ipcRenderer.on('create:horizontal-connector', () => {
 
@@ -170,6 +197,8 @@ function createDiagram() {
       store.dispatch(moveTypeBoxAction(event, store));
     } else if (event.detail.type === 'node') {
       store.dispatch(moveNodeAction(event, store))
+    } else if (event.detail.type === 'vertical-connector-node') {
+      store.dispatch(moveVerticalNodeAction(event, store));
     }
   });
 
@@ -197,6 +226,7 @@ function createDiagram() {
 
 
   store.subscribe(() => {
+
     components = render(components, store);
   });
 

@@ -1,7 +1,8 @@
-const positionConnector = require('./position-connector.js');
 const {createConnector} = require('./create-connector.js');
+const {positionConnector} = require('./position-connector.js');
 
-module.exports = function createConnectorComponent(svgEl, id) {
+function createVerticalConnector(svgEl, id) {
+
   let el;
   let state;
   let outer1El;
@@ -13,14 +14,14 @@ module.exports = function createConnectorComponent(svgEl, id) {
   return function(store) {
     let isDeleted = false;
 
-    const newState = store.getState().horizontalConnectors.find(connector => {
+    const newState = store.getState().verticalConnectors.find(connector => {
       return connector.id === id;
     });
 
     if (!state) {
-      ({el, outer1El, inner1El, inner2El, outer2El, pathEl } = createConnector(svgEl, newState, id));
+      ({el, outer1El, inner1El, inner2El, outer2El, pathEl} = createConnector(svgEl, newState, id))
 
-    } else if (state !== newState) {
+    } else if(state !== newState) {
 
       positionConnector(newState, {
         outer1El,
@@ -31,6 +32,7 @@ module.exports = function createConnectorComponent(svgEl, id) {
       });
 
     } else if (!newState) {
+
       el.remove();
 
       isDeleted = true;
@@ -41,3 +43,5 @@ module.exports = function createConnectorComponent(svgEl, id) {
     return isDeleted;
   }
 }
+
+module.exports.createVerticalConnector = createVerticalConnector;

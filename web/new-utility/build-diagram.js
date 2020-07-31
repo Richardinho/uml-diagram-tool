@@ -27,7 +27,10 @@ function buildTypeBoxViewModel(config, svgEl) {
 
   tb.paddingLeft = padding;
   tb.borderWidth = borderWidth;
+
   tb.horizontalConnectors = config.horizontalConnectors;
+  tb.verticalConnectors = config.verticalConnectors;
+
   tb.backgroundColor = backgroundColor;
   tb.borderColor = lineColor;
 
