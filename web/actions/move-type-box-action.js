@@ -1,5 +1,10 @@
 const {MOVE_TYPE_BOX} = require('../action.constants.js');
-const {getConnector} = require('../store/connector.js');
+
+const {
+  getVerticalConnector,
+  getConnector,
+} = require('../store/connector.js');
+
 const {
   NODE_OUTER_1,
   NODE_INNER_1,
@@ -17,10 +22,13 @@ module.exports = (event, store) => {
   // newX may be x + width
   const newX = typeBoxModel.x + event.detail.xdiff;
   const newY = typeBoxModel.y + event.detail.ydiff;
+  const height = typeBoxModel.height;
+  const width = typeBoxModel.width;
 
   // find out any connectors to this box
   // For each one, move the nodes
   const horizontalConnectors = typeBoxModel.horizontalConnectors;
+  const verticalConnectors = typeBoxModel.verticalConnectors;
 
   const connectors = [];
 
@@ -29,22 +37,59 @@ module.exports = (event, store) => {
       let connectorId = hc.id;
       let nodeType = hc.nodeType;
       let connector = getConnector(store, connectorId);
-      let node = connector.nodes[nodeType]
 
+      let nodeX;
       let nodeY;
 
-      if (nodeType === NODE_OUTER_2) {
-        nodeY = connector.nodes[NODE_INNER_2].y;
-        
+      if (nodeType === NODE_OUTER_1) {
+        nodeY = connector.nodes[NODE_OUTER_1].y + event.detail.ydiff;
+      } else if (nodeType === NODE_OUTER_2) {
+        nodeY = connector.nodes[NODE_INNER_2].y + event.detail.ydiff;
+      }
+
+      if (connector.nodes[NODE_INNER_1].x < newX) {
+        nodeX = newX;
       } else {
-        nodeY = node.y;
+        nodeX = newX + width;
       }
 
       connectors.push({
         nodeType,
         id: connectorId,
-        x: newX,
-        y: nodeY + event.detail.ydiff, 
+        x: nodeX,
+        y: nodeY, 
+      });
+    });
+  }
+
+  const verticalConnectorsArray = [];
+
+  if (verticalConnectors && verticalConnectors.length > 0) {
+    verticalConnectors.forEach(verticalConnector => {
+      const {id: connectorId, nodeType } = verticalConnector;
+
+      let connector = getVerticalConnector(store, connectorId);
+
+      let nodeX;
+      let nodeY;
+
+      if (nodeType === NODE_OUTER_1) {
+        nodeX = connector.nodes[NODE_OUTER_1].x + event.detail.xdiff; 
+      } else if (nodeType === NODE_OUTER_2) {
+        nodeX = connector.nodes[NODE_INNER_2].x + event.detail.xdiff; 
+      }
+
+      if (connector.nodes[NODE_INNER_1].y < newY) {
+        nodeY = newY;
+      } else {
+        nodeY = newY + height;
+      }
+
+      verticalConnectorsArray.push({
+        nodeType,
+        id: connectorId,
+        x: nodeX,
+        y: nodeY,
       });
     });
   }
@@ -55,5 +100,6 @@ module.exports = (event, store) => {
     newX,
     newY,
     horizontalConnectors: connectors,
+    verticalConnectors: verticalConnectorsArray,
   };
 }

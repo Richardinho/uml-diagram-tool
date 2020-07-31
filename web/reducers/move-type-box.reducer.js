@@ -6,6 +6,49 @@ function moveTypeBoxReducer(state, action) {
   return {
     ...state,
     // todo: handle vertical connectors here
+    verticalConnectors: state.verticalConnectors.map(connector => {
+      const vcs = action.verticalConnectors;
+
+      const vc = vcs.find(vc => vc.id === connector.id);
+
+      if (vc) {
+        if(vc.nodeType === 'outer1') {
+          return {
+            ...connector,
+            nodes: {
+              ...connector.nodes,
+              outer1: {
+                ...connector.nodes.outer1,
+                x: vc.x,
+                y: vc.y,
+              },
+              inner1: {
+                ...connector.nodes.inner1,
+                x: vc.x,
+              }
+            }
+          };
+        } else if (vc.nodeType === 'outer2') {
+          return {
+            ...connector,
+            nodes: {
+              ...connector.nodes,
+              outer2: {
+                ...connector.nodes.outer2,
+                y: vc.y,
+              },
+              inner2: {
+                ...connector.nodes.inner2,
+                x: vc.x,
+              }
+            }
+          };
+        }
+      } 
+
+      return connector;
+    }),
+
     horizontalConnectors: state.horizontalConnectors.map((connector) => {
       const hcs = action.horizontalConnectors;
 
